@@ -1,6 +1,3 @@
-# * create_spend_chart - function outside of class. 
-#  takes list of categories returns string that is a barchart 
-
 class Category:
 #ledger list
   def __init__(self, name):
@@ -30,8 +27,9 @@ class Category:
         self.ledger.append({"amount": (amount), "description": description})
       else:
         self.ledger.append({"amount": (amount), "description": description})
-     
- # *get_balance - returns current balance based on above methods
+    else:
+      return False
+# *get_balance - returns current balance based on above methods
   def get_balance(self):
     return self.balance
 
@@ -42,6 +40,8 @@ class Category:
     if can_withdraw:
       self.withdraw(amount, "Transfer to " + category.name)
       category.deposit(amount, "Transfer from " + self.name)
+    else:
+      return False
          
 # *check_funds
   def check_funds(self, amount):
@@ -60,14 +60,56 @@ class Category:
       else:
         p += f"{category['description']}{category['amount']:>{30 - len(category['description'])}}\n"
     p += f"Total: {self.balance}"
-    
-                
+                  
     return p
-      
-    
-    
-
   
+# * create_spend_chart - function outside of class. 
+#  takes list of categories returns string that is a barchart
 
 def create_spend_chart(categories):
-  pass
+  c = f"Percentage spent by category\n"
+  
+  totalspend = 0
+  cats = {}
+  for category in categories:
+    catspend = 0
+    for item in category.ledger:
+      amount = float(item["amount"])
+      if amount < 0:      
+        catspend += abs(amount)
+        totalspend += abs(amount)
+
+    cats[category.name] = catspend
+  #print(cats)
+
+  for key, val in cats.items():
+    persent = val/totalspend * 100
+    persent = round(persent, -1)
+    cats[key] = persent
+         
+  for n in range(100, -1, -10):
+    c += f"{str(n) + '|':>4}"
+    for val in cats.values():
+      if val >= n:
+        c += " o "
+    c += "\n"
+
+  x = len(cats.values())
+  c += f"    {((x*3)+1)* '-':}\n"
+
+  max_name_length = max(len(category.name) for category in categories)
+
+    # Print category names vertically
+  for i in range(max_name_length):
+      c += "     "
+      for category in categories:
+          if i < len(category.name):
+              c += category.name[i] + "  "
+          else:
+              c += "   "
+      c += "\n"
+     
+  return c
+
+  
+ 
