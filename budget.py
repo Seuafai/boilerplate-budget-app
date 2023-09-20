@@ -7,8 +7,9 @@ class Category:
      
 # *deposit - appends to ledger list in form of {"amount": amount, "description": description}
   def deposit(self, amount, description = ""):
+    amount = float(amount)
     self.balance += amount
-    amount = "{:.2f}".format(float(amount))
+    print(amount)
     self.ledger.append({"amount": amount, "description": description})
     
 # *withdraw - similar to deposit but neg. num.
