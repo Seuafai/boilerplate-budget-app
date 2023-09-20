@@ -7,23 +7,19 @@ class Category:
      
 # *deposit - appends to ledger list in form of {"amount": amount, "description": description}
   def deposit(self, amount, description = ""):
-    #amount = float(amount)
-    #print(amount)
+    
     self.balance += amount
-    #print(self.balance)
+    
     self.ledger.append({"amount": amount, "description": description})
-    #print(self.ledger)
+   
 # *withdraw - similar to deposit but neg. num.
 #  if not enough funds no ledger entry. Return True if withdrawal occurs. else False
   def withdraw(self, amount, description=""):
     can_withdraw = self.check_funds(amount)
-    #amount = float(amount)  # Convert the amount to a float
-    #formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
-
+   
     if can_withdraw:
         self.balance -= amount
         self.ledger.append({"amount": -amount, "description": description})
-        #print(self.ledger)
         return True
     return False
      
@@ -36,10 +32,6 @@ class Category:
     can_withdraw = self.check_funds(amount)
 
     if can_withdraw:
-        #amount = -float(amount)  # Convert the amount to a float
-        #print(amount)
-        #formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
-        #print(formatted_amount)
         self.withdraw(amount, "Transfer to " + category.name)
         category.deposit(amount, "Transfer from " + self.name)
         #print(self.ledger)
@@ -72,10 +64,7 @@ class Category:
 # * create_spend_chart - function outside of class. 
 #  takes list of categories returns string that is a barchart
 
-
 def create_spend_chart(categories):
-  import re
-  import math
   
   c = f"Percentage spent by category\n"
   
@@ -87,19 +76,14 @@ def create_spend_chart(categories):
       
       amount = entry["amount"]
       amount = float(amount)
-      #print(amount)
-#problem begin from line above   #FUUUUUUUUUUUUUUUUUUUUUUUCK
       
       if amount < 0:      
         catspend += amount
-        #print(amount)
-        
-        #print(catspend)
         totalspend += amount
       
 
     cats[category.name] = catspend
-    #print(catspend)
+    
 
   # Check if totalspend is zero to avoid division by zero
   
@@ -107,15 +91,10 @@ def create_spend_chart(categories):
   for key, val in cats.items():
     
     #print(val) 
+    percent = round((val/totalspend)*100)
     
-    percent = val/totalspend*100
-    percent -= percent % 10
-    #print(totalspend)
-    #print(percent)
-    percent = round(percent, -1)
-    #print(percent)
     cats[key] = percent
-    #print(cats[key], percent)     
+        
   for n in range(100, -1, -10):
     c += f"{str(n) + '|':>4}"
     for val in cats.values():
@@ -132,16 +111,16 @@ def create_spend_chart(categories):
 
     # Print category names vertically
   for i in range(max_name_length):
-      c += "    "
-      for category in categories:
-          if i < len(category.name):
-              c += f" {category.name[i]} "
-          else:
+    c += "    "
+    for category in categories:
+        if i < len(category.name):
+            c += f" {category.name[i]} "
+        else:
             c += "   "
-      if i < max_name_length -1:
-        c += " \n" 
-  
+    if i != max_name_length -1:
+      c += " \n"
+    else:
+      c += " "
+
   return c
 
-  
- 
