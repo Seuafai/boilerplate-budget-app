@@ -1,5 +1,3 @@
-
-
 class Category:
 #ledger list
   def __init__(self, name):
@@ -77,6 +75,7 @@ class Category:
 
 def create_spend_chart(categories):
   import re
+  import math
   
   c = f"Percentage spent by category\n"
   
@@ -87,12 +86,7 @@ def create_spend_chart(categories):
     for entry in category.ledger:
       
       amount = entry["amount"]
-      amount = str(amount)
-      if isinstance(amount, str) and amount.startswith("."):
-        amount = float(amount[1:])
-        print(amount)
-      else:
-          amount = float(amount)     
+      amount = float(amount)
       #print(amount)
 #problem begin from line above   #FUUUUUUUUUUUUUUUUUUUUUUUCK
       
@@ -114,8 +108,8 @@ def create_spend_chart(categories):
     
     #print(val) 
     
-    percent = val/totalspend * 100
-    percent - round(percent, 2)
+    percent = val/totalspend*100
+    percent -= percent % 10
     #print(totalspend)
     #print(percent)
     percent = round(percent, -1)
@@ -143,8 +137,9 @@ def create_spend_chart(categories):
           if i < len(category.name):
               c += f" {category.name[i]} "
           else:
-              c += "   "
-      c += " \n"
+            c += "   "
+      if i < max_name_length -1:
+        c += " \n" 
   
   return c
 
