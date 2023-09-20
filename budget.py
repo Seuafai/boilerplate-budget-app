@@ -1,29 +1,34 @@
+
+
 class Category:
 #ledger list
   def __init__(self, name):
     self.name = name
-    self.balance = 0.00
+    self.balance = 0
     self.ledger = []
      
 # *deposit - appends to ledger list in form of {"amount": amount, "description": description}
   def deposit(self, amount, description = ""):
-    amount = float(amount)
+    #amount = float(amount)
+    #print(amount)
     self.balance += amount
+    #print(self.balance)
     self.ledger.append({"amount": amount, "description": description})
-    
+    #print(self.ledger)
 # *withdraw - similar to deposit but neg. num.
 #  if not enough funds no ledger entry. Return True if withdrawal occurs. else False
   def withdraw(self, amount, description=""):
     can_withdraw = self.check_funds(amount)
-    amount = float(amount)  # Convert the amount to a float
-    formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
+    #amount = float(amount)  # Convert the amount to a float
+    #formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
 
     if can_withdraw:
         self.balance -= amount
         self.ledger.append({"amount": -amount, "description": description})
+        #print(self.ledger)
         return True
     return False
-      
+     
 # *get_balance - returns current balance based on above methods
   def get_balance(self):
     return self.balance
@@ -33,11 +38,12 @@ class Category:
     can_withdraw = self.check_funds(amount)
 
     if can_withdraw:
-        amount = -float(amount)  # Convert the amount to a float
-        formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
+        #amount = -float(amount)  # Convert the amount to a float
+        #print(amount)
+        #formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
         #print(formatted_amount)
-        self.withdraw(-amount, "Transfer to " + category.name)
-        category.deposit(-amount, "Transfer from " + self.name)
+        self.withdraw(amount, "Transfer to " + category.name)
+        category.deposit(amount, "Transfer from " + self.name)
         #print(self.ledger)
         return True
     return False
@@ -54,7 +60,8 @@ class Category:
     p = f"{self.name:*^30}\n"
     
     for category in self.ledger:
-      amount = float(category['amount'])
+      amount = category['amount']
+      #print(amount)
       description = category['description']
       formatted_amount = "{:.2f}".format(amount)
       if len(description) > 23:
@@ -67,20 +74,34 @@ class Category:
 # * create_spend_chart - function outside of class. 
 #  takes list of categories returns string that is a barchart
 
+
 def create_spend_chart(categories):
+  import re
+  
   c = f"Percentage spent by category\n"
   
   totalspend = 0
   cats = {}
   for category in categories:
-    catspend = 0
-    for item in category.ledger:
-      amount = item["amount"]
+    catspend = int(0)
+    for entry in category.ledger:
+      
+      amount = entry["amount"]
+      amount = str(amount)
+      if isinstance(amount, str) and amount.startswith("."):
+        amount = float(amount[1:])
+        print(amount)
+      else:
+          amount = float(amount)     
       #print(amount)
+#problem begin from line above   #FUUUUUUUUUUUUUUUUUUUUUUUCK
+      
       if amount < 0:      
-        catspend += abs(amount)
+        catspend += amount
         #print(amount)
-        totalspend += abs(amount)
+        
+        #print(catspend)
+        totalspend += amount
       
 
     cats[category.name] = catspend
@@ -90,8 +111,11 @@ def create_spend_chart(categories):
   
     #print(totalspend)
   for key, val in cats.items():
-    #print(val)
+    
+    #print(val) 
+    
     percent = val/totalspend * 100
+    percent - round(percent, 2)
     #print(totalspend)
     #print(percent)
     percent = round(percent, -1)
@@ -103,7 +127,9 @@ def create_spend_chart(categories):
     for val in cats.values():
       if val >= n:
         c += " o "
-    c += "\n"
+      else:
+        c += "   "
+    c += " \n"
 
   x = len(cats.values())
   c += f"    {((x*3)+1)* '-':}\n"
@@ -117,9 +143,9 @@ def create_spend_chart(categories):
           if i < len(category.name):
               c += f" {category.name[i]} "
           else:
-              c += f"   "
-      c += "\n"
-     
+              c += "   "
+      c += " \n"
+  
   return c
 
   
