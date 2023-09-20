@@ -6,27 +6,19 @@ class Category:
     self.ledger = []
      
 # *deposit - appends to ledger list in form of {"amount": amount, "description": description}
-  def deposit(self, amount, description = 1):
+  def deposit(self, amount, description = ""):
     self.balance += amount
     amount = "{:.2f}".format(float(amount))
-    if description != 1:
-      self.ledger.append({"amount": amount, "description": description})
-    else:
-      description = ""
-      self.ledger.append({"amount": amount, "description": description})
+    self.ledger.append({"amount": amount, "description": description})
+    
 # *withdraw - similar to deposit but neg. num.
 #  if not enough funds no ledger entry. Return True if withdrawal occurs. else False
-  def withdraw(self, amount, description = 1):
+  def withdraw(self, amount, description = ""):
     can_withdraw = self.check_funds(amount)
     amount = "{:.2f}".format(-float(amount))
-    #print(amount)
     if can_withdraw:
       self.balance += float(amount)
-      if description == 1:
-        description = ""
-        self.ledger.append({"amount": (amount), "description": description})
-      else:
-        self.ledger.append({"amount": (amount), "description": description})
+      self.ledger.append({"amount": (amount), "description": description})
     else:
       return False
 # *get_balance - returns current balance based on above methods
@@ -101,10 +93,10 @@ def create_spend_chart(categories):
 
     # Print category names vertically
   for i in range(max_name_length):
-      c += "     "
+      c += "    "
       for category in categories:
           if i < len(category.name):
-              c += category.name[i] + "  "
+              c += f" {category.name[i]} "
           else:
               c += "   "
       c += "\n"
