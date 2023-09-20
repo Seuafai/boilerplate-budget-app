@@ -13,15 +13,17 @@ class Category:
     
 # *withdraw - similar to deposit but neg. num.
 #  if not enough funds no ledger entry. Return True if withdrawal occurs. else False
-  def withdraw(self, amount, description = ""):
+  def withdraw(self, amount, description=""):
     can_withdraw = self.check_funds(amount)
-    amount = "{:.2f}".format(-float(amount))
+    amount = float(amount)  # Convert the amount to a float
+    formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
+
     if can_withdraw:
-      self.balance += float(amount)
-      self.ledger.append({"amount": (amount), "description": description})
-      #print(self.ledger)    
-    else:
-      return False
+        self.balance -= amount
+        self.ledger.append({"amount": -amount, "description": description})
+        return True
+    return False
+      
 # *get_balance - returns current balance based on above methods
   def get_balance(self):
     return self.balance
@@ -31,12 +33,14 @@ class Category:
     can_withdraw = self.check_funds(amount)
 
     if can_withdraw:
-        amount = float(amount)  # Convert the amount to a float
+        amount = -float(amount)  # Convert the amount to a float
         formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
-        self.withdraw(amount, "Transfer to " + category.name)
-        category.deposit(amount, "Transfer from " + self.name)
-    else:
-        return False
+        #print(formatted_amount)
+        self.withdraw(-amount, "Transfer to " + category.name)
+        category.deposit(-amount, "Transfer from " + self.name)
+        print(self.ledger)
+        return True
+    return False
 
          
 # *check_funds
@@ -74,12 +78,16 @@ def create_spend_chart(categories):
       amount = float(item["amount"])
       if amount < 0:      
         catspend += abs(amount)
-        totalspend += abs(amount)
+      totalspend += abs(amount)
 
     cats[category.name] = catspend
   #print(cats)
 
+  # Check if totalspend is zero to avoid division by zero
+  
+    print(totalspend)
   for key, val in cats.items():
+  
     persent = val/totalspend * 100
     persent = round(persent, -1)
     cats[key] = persent
