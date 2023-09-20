@@ -9,7 +9,6 @@ class Category:
   def deposit(self, amount, description = ""):
     amount = float(amount)
     self.balance += amount
-    print(amount)
     self.ledger.append({"amount": amount, "description": description})
     
 # *withdraw - similar to deposit but neg. num.
@@ -20,6 +19,7 @@ class Category:
     if can_withdraw:
       self.balance += float(amount)
       self.ledger.append({"amount": (amount), "description": description})
+      #print(self.ledger)    
     else:
       return False
 # *get_balance - returns current balance based on above methods
@@ -29,12 +29,15 @@ class Category:
 # *Transfer - accepts amount and another budget catefory as args. refer notes
   def transfer(self, amount, category):
     can_withdraw = self.check_funds(amount)
-    
+
     if can_withdraw:
-      self.withdraw(amount, "Transfer to " + category.name)
-      category.deposit(amount, "Transfer from " + self.name)
+        amount = float(amount)  # Convert the amount to a float
+        formatted_amount = "{:.2f}".format(amount)  # Format the amount with two decimal places
+        self.withdraw(amount, "Transfer to " + category.name)
+        category.deposit(amount, "Transfer from " + self.name)
     else:
-      return False
+        return False
+
          
 # *check_funds
   def check_funds(self, amount):
@@ -47,13 +50,14 @@ class Category:
     p = f"{self.name:*^30}\n"
     
     for category in self.ledger:
-      if len(category['description']) > 23:
-        category['description'] = category['description'][0:23]
-        p += f"{category['description']}{category['amount']:>{30 - len(category['description'])}}\n"
-      else:
-        p += f"{category['description']}{category['amount']:>{30 - len(category['description'])}}\n"
-    p += f"Total: {self.balance}"
-                  
+      amount = float(category['amount'])
+      description = category['description']
+      formatted_amount = "{:.2f}".format(amount)
+      if len(description) > 23:
+        description = description[:23]
+      p += f"{description}{formatted_amount:>{30 - len(description)}}\n"
+    formatted_balance = "{:.2f}".format(self.balance)  # Format the balance with two decimal places
+    p += f"Total: {formatted_balance}"
     return p
   
 # * create_spend_chart - function outside of class. 
