@@ -38,7 +38,7 @@ class Category:
         #print(formatted_amount)
         self.withdraw(-amount, "Transfer to " + category.name)
         category.deposit(-amount, "Transfer from " + self.name)
-        print(self.ledger)
+        #print(self.ledger)
         return True
     return False
 
@@ -75,23 +75,29 @@ def create_spend_chart(categories):
   for category in categories:
     catspend = 0
     for item in category.ledger:
-      amount = float(item["amount"])
+      amount = item["amount"]
+      #print(amount)
       if amount < 0:      
         catspend += abs(amount)
-      totalspend += abs(amount)
+        #print(amount)
+        totalspend += abs(amount)
+      
 
     cats[category.name] = catspend
-  #print(cats)
+    #print(catspend)
 
   # Check if totalspend is zero to avoid division by zero
   
-    print(totalspend)
+    #print(totalspend)
   for key, val in cats.items():
-  
-    persent = val/totalspend * 100
-    persent = round(persent, -1)
-    cats[key] = persent
-         
+    #print(val)
+    percent = val/totalspend * 100
+    #print(totalspend)
+    #print(percent)
+    percent = round(percent, -1)
+    #print(percent)
+    cats[key] = percent
+    #print(cats[key], percent)     
   for n in range(100, -1, -10):
     c += f"{str(n) + '|':>4}"
     for val in cats.values():
@@ -111,7 +117,7 @@ def create_spend_chart(categories):
           if i < len(category.name):
               c += f" {category.name[i]} "
           else:
-              c += "   "
+              c += f"   "
       c += "\n"
      
   return c
